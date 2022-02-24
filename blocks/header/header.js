@@ -1,4 +1,4 @@
-import { readBlockConfig } from '../../scripts/scripts.js';
+import { readBlockConfig, makeRelativeLinks } from '../../scripts/scripts.js';
 
 /**
  * collapses all open nav sections
@@ -54,16 +54,23 @@ export default async function decorate(block) {
   nav.append(navSections);
 
   // hamburger for mobile
-  const hamburger = document.createElement('div');
-  hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = '<div class="nav-hamburger-icon"></div>';
-  hamburger.addEventListener('click', () => {
-    const expanded = nav.getAttribute('aria-expanded') === 'true';
-    document.body.style.overflowY = expanded ? '' : 'hidden';
-    nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  });
-  nav.prepend(hamburger);
-  nav.setAttribute('aria-expanded', 'false');
+  // const hamburger = document.createElement('div');
+  // hamburger.classList.add('nav-hamburger');
+  // hamburger.innerHTML = '<div class="nav-hamburger-icon"></div>';
+  // hamburger.addEventListener('click', () => {
+  //   const expanded = nav.getAttribute('aria-expanded') === 'true';
+  //   document.body.style.overflowY = expanded ? '' : 'hidden';
+  //   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  // });
+  // nav.prepend(hamburger);
+  // nav.setAttribute('aria-expanded', 'false');
 
   block.append(nav);
+
+  const orgLogo = document.createElement('img');
+  orgLogo.classList.add('header-org-logo');
+  orgLogo.src = '/images/whf-az.png';
+  block.append(orgLogo);
+
+  makeRelativeLinks(nav);
 }

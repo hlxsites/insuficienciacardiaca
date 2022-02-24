@@ -166,6 +166,18 @@ export function decorateSections(main) {
     wrappers.forEach((wrapper) => section.append(wrapper));
     section.classList.add('section');
     section.setAttribute('data-section-status', 'initialized');
+
+    /* process section metadata */
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      const keys = Object.keys(meta);
+      keys.forEach((key) => {
+        if (key === 'style') section.classList.add(toClassName(meta.style));
+        else section.dataset[key] = meta[key];
+      });
+      sectionMeta.remove();
+    }
   });
 }
 /**
@@ -406,7 +418,6 @@ export function decoratePictures(main) {
 export function addFavIcon(href) {
   const link = document.createElement('link');
   link.rel = 'icon';
-  link.type = 'image/svg+xml';
   link.href = href;
   const existingLink = document.querySelector('head link[rel="icon"]');
   if (existingLink) {
@@ -485,14 +496,69 @@ document.addEventListener('click', () => sampleRUM('click'));
 loadPage(document);
 
 function buildHeroBlock(main) {
-  const h1 = main.querySelector('h1');
+  const h1 = main.querySelectorAll('h1');
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
-    const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
-    main.prepend(section);
+  if (h1.length && picture && (h1[0].compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    const section = picture.closest('div');
+    section.style.backgroundImage = `url(${picture.querySelector('img').src})`;
+    picture.remove();
+    section.prepend(buildBlock('hero', { elems: [...h1] }));
   }
+}
+
+export function makeRelativeLinks(el) {
+  el.querySelectorAll('a').forEach(($a) => {
+    if (!$a.href) return;
+    try {
+      const {
+        protocol, hostname, pathname, search, hash,
+      } = new URL($a.href);
+      if (hostname.endsWith('.page')
+        || hostname.endsWith('.live')) {
+        // make link relative
+        $a.href = `${pathname}${search}${hash}`;
+      } else if (!['mailto:', 'tel:', 'sms:'].includes(protocol)) {
+        // open external links in a new tab
+        $a.target = '_blank';
+      }
+    } catch (e) {
+      // invalid url
+    }
+  });
+}
+
+export function decorateButtons(block = document) {
+  const noButtonBlocks = [];
+  block.querySelectorAll(':scope a').forEach(($a) => {
+    $a.title = $a.title || $a.textContent;
+    const $block = $a.closest('div.section > div > div');
+    let blockName;
+    if ($block) {
+      blockName = $block.className;
+    }
+    if (!noButtonBlocks.includes(blockName)
+      && $a.href !== $a.textContent) {
+      const $up = $a.parentElement;
+      const $twoup = $a.parentElement.parentElement;
+      if (!$a.querySelector('img')) {
+        if ($up.childNodes.length === 1 && ($up.tagName === 'P' || $up.tagName === 'DIV')) {
+          $a.className = 'button accent'; // default
+          $up.classList.add('button-container');
+        }
+        if ($up.childNodes.length === 1 && $up.tagName === 'STRONG'
+            && $twoup.childNodes.length === 1 && $twoup.tagName === 'P') {
+          $a.className = 'button accent';
+          $twoup.classList.add('button-container');
+        }
+        if ($up.childNodes.length === 1 && $up.tagName === 'EM'
+            && $twoup.childNodes.length === 1 && $twoup.tagName === 'P') {
+          $a.className = 'button accent light';
+          $twoup.classList.add('button-container');
+        }
+      }
+    }
+  });
 }
 
 function loadHeader(header) {
@@ -532,6 +598,8 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateButtons(main);
+  makeRelativeLinks(main);
 }
 
 /**
@@ -556,7 +624,7 @@ async function loadLazy(doc) {
   loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
+  addFavIcon(`${window.hlx.codeBasePath}/images/favicon.ico`);
 }
 
 /**
