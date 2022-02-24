@@ -1,9 +1,9 @@
-# Your Project's Title...
-Your project's description...
+# Foco en Insuficiencia Cardiaca
+An AstraZeneca site.
 
 ## Environments
-- Preview: https://main--{repo}--{owner}.hlx3.page/
-- Live: https://main--{repo}--{owner}.hlx.live/
+- Preview: https://main--insuficienciacardiaca--hlxsites.hlx3.page/ar/
+- Live: https://main--insuficienciacardiaca--hlxsites.hlx.live/ar/
 
 ## Installation
 
