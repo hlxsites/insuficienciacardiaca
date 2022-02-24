@@ -15,7 +15,7 @@ main .hero-container {
     color: var(--background-color);
     text-align: center;
 }
-  
+
 main .hero {
     position: relative;
     background-color: transparent;
