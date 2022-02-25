@@ -1,4 +1,4 @@
-import { readBlockConfig, makeRelativeLinks } from '../../scripts/scripts.js';
+import { toClassName, readBlockConfig, makeRelativeLinks } from '../../scripts/scripts.js';
 
 /**
  * collapses all open nav sections
@@ -32,45 +32,25 @@ export default async function decorate(block) {
   const navSections = document.createElement('div');
   navSections.classList.add('nav-sections');
   nav.innerHTML = html;
-  nav.querySelectorAll(':scope > div').forEach((navSection, i) => {
-    if (!i) {
-      // first section is the brand section
-      const brand = navSection;
-      brand.classList.add('nav-brand');
-    } else {
-      // all other sections
-      navSections.append(navSection);
-      navSection.classList.add('nav-section');
-      const h2 = navSection.querySelector('h2');
-      if (h2) {
-        h2.addEventListener('click', () => {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          collapseAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        });
-      }
-    }
+
+  nav.querySelector(':scope > div').classList.add('nav-brand');
+  
+  document.querySelectorAll('main h2').forEach((heading, i) => {
+    const navSection = document.createElement('div');
+    const h2 = navSection.appendChild(document.createElement('h2'));
+    h2.textContent = heading.textContent;
+    h2.addEventListener('click', () => {
+      heading.scrollIntoView({ behavior: 'smooth', block: 'center'});
+    });
+    navSections.append(navSection);
+    navSection.classList.add('nav-section');
   });
+  const orgLogo = navSections.appendChild(document.createElement('div'));
+  orgLogo.classList.add('nav-section', 'nav-alt-brand');
+  navSections.append(orgLogo);
+
   nav.append(navSections);
-
-  // hamburger for mobile
-  // const hamburger = document.createElement('div');
-  // hamburger.classList.add('nav-hamburger');
-  // hamburger.innerHTML = '<div class="nav-hamburger-icon"></div>';
-  // hamburger.addEventListener('click', () => {
-  //   const expanded = nav.getAttribute('aria-expanded') === 'true';
-  //   document.body.style.overflowY = expanded ? '' : 'hidden';
-  //   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  // });
-  // nav.prepend(hamburger);
-  // nav.setAttribute('aria-expanded', 'false');
-
   block.append(nav);
-
-  const orgLogo = document.createElement('img');
-  orgLogo.classList.add('header-org-logo');
-  orgLogo.src = '/images/whf-az.png';
-  block.append(orgLogo);
 
   makeRelativeLinks(nav);
 }

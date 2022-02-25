@@ -14,6 +14,7 @@
   --link-color: 3 95 230;
   --highlight-color: #e01f2d;
   --background-color: #fff;
+  --alt-background-color: #f6f6f6;
   --text-color: #000;
   --body-font-family: 'Open Sans', sans-serif;
   --heading-font-family: 'Teko', sans-serif;
@@ -31,6 +32,7 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
   opacity: 0;
+  text-align: center;
 }
 
 body.appear {
@@ -57,15 +59,20 @@ h4, h5, h6 {
 }
 
 h1 { font-size: 38px }
-h2 { font-size: 2.25rem; }
-h3 { font-size: 1.5rem; }
+h2 { font-size: 29px; }
+h3 { font-size: 25px; }
 h4 { font-size: 1.25rem; }
 h5 { font-size: 1rem; }
 h6 { font-size: .875rem; }
 
+em {
+  font-style: normal;
+  color: var(--highlight-color);
+}
+
 p, dl, ol, ul, pre, blockquote {
-  margin-top: 1em;
-  margin-bottom: 1em;
+  max-width: 1100px;
+  margin: 1em auto;
 }
 
 a:any-link {
@@ -120,7 +127,7 @@ main input:hover {
 }
 
 main .section {
-  padding: 0 2rem; 
+  padding: 0 2rem;
 }
 
 main pre {
@@ -149,10 +156,12 @@ main blockquote p::after {
 }
 
 hr {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
+  width: 10%;
   border: 0;
-  border-bottom: 1px solid var(--text-color);
+  color: #3c3c3c;
+  background: #3c3c3c;
+  margin: 30px auto;
+  height: 1px;
 }
 
 main img {
@@ -204,4 +213,6 @@ main .section[data-section-status='initialized'] {
 
 @media (min-width:576px) {
   h1 { font-size: 60px }
+  h2 { font-size: 45px }
+  h3 { font-size: 33px }
 }

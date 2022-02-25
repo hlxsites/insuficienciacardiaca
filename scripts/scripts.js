@@ -561,6 +561,14 @@ export function decorateButtons(block = document) {
   });
 }
 
+function decorateHRs() {
+  document.querySelectorAll('main p').forEach((p) => {
+    if (p.textContent === '----') {
+      p.replaceWith(document.createElement('hr'));
+    }
+  });
+}
+
 function loadHeader(header) {
   const headerBlock = buildBlock('header', '');
   header.append(headerBlock);
@@ -599,6 +607,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
+  decorateHRs(main);
   makeRelativeLinks(main);
 }
 

@@ -32,11 +32,6 @@ main .hero h1 + h1 {
     margin-top: 0;
 }
   
-main .hero h1 > em {
-  font-style: normal;
-  color: var(--highlight-color);
-}
-  
 main .hero img {
     object-fit: cover;
     width: 100%;
