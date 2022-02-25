@@ -23,6 +23,7 @@ header .nav {
   justify-items: flex-start;
   justify-content: space-around;
   box-sizing: border-box;
+  padding: 10px 0;
 }
 
 /* brand */
@@ -54,6 +55,8 @@ header .nav-brand a {
 
 header .nav-alt-brand {
   display: none;
+  align-self: flex-end;
+  height: 54px;
   color: transparent;
   min-width: 192px;
   background-image: url(/images/whf-az.png);
@@ -102,8 +105,9 @@ header .header-org-logo {
     border-left: solid 1px #ccc;
   }
 
-  header .nav-section:first-child {
-    border-left: none;
+  header .nav-section:first-child,
+  header .nav-section:last-child {
+      border-left: none;
   }
 
   header .nav-alt-brand {
