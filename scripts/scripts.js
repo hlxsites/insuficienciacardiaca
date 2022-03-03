@@ -496,14 +496,12 @@ document.addEventListener('click', () => sampleRUM('click'));
 loadPage(document);
 
 function buildHeroBlock(main) {
-  const h1 = main.querySelectorAll('h1');
+  const h1 = main.querySelector('h1');
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
-  if (h1.length && picture && (h1[0].compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
     const section = picture.closest('div');
-    section.style.backgroundImage = `url(${picture.querySelector('img').src})`;
-    picture.remove();
-    section.prepend(buildBlock('hero', { elems: [...h1] }));
+    section.prepend(buildBlock('hero', { elems: [picture, h1] }));
   }
 }
 
@@ -645,3 +643,50 @@ function loadDelayed() {
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
+
+/*
+ * lighthouse performance instrumentation helper
+ * (needs a refactor)
+ */
+
+function stamp(message) {
+  if (window.name.includes('performance')) {
+    // eslint-disable-next-line no-console
+    console.log(`${new Date() - performance.timing.navigationStart}:${message}`);
+  }
+}
+
+stamp('start');
+
+function registerPerformanceLogger() {
+  try {
+    const polcp = new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      stamp(JSON.stringify(entries));
+      // eslint-disable-next-line no-console
+      console.log(entries[0].element);
+    });
+    polcp.observe({ type: 'largest-contentful-paint', buffered: true });
+
+    const pols = new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      stamp(JSON.stringify(entries));
+      // eslint-disable-next-line no-console
+      console.log(entries[0].sources[0].node);
+    });
+    pols.observe({ type: 'layout-shift', buffered: true });
+
+    const pores = new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      entries.forEach((entry) => {
+        stamp(`resource loaded: ${entry.name} - [${Math.round(entry.startTime + entry.duration)}]`);
+      });
+    });
+
+    pores.observe({ type: 'resource', buffered: true });
+  } catch (e) {
+    // no output
+  }
+}
+
+if (window.name.includes('performance')) registerPerformanceLogger();

@@ -216,3 +216,12 @@ main .section[data-section-status='initialized'] {
   h2 { font-size: 45px }
   h3 { font-size: 33px }
 }
+
+header {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  background-color: var(--background-color);
+  height: 80px;
+  width: 100vw;
+}
